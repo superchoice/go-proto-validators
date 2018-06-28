@@ -68,5 +68,7 @@ message FieldValidator {
   optional int64 rune_length_lt = 18;
   // Field value of integer equal this value.
   optional int64 rune_length_eq = 19;
+  // Field value of string for valid http url.
+  optional bool string_http_url = 20;
 
 }

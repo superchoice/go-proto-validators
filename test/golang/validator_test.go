@@ -15,7 +15,7 @@ var (
 
 func buildProto3(someString string, someInt uint32, identifier string, someValue int64, someDoubleStrict float64,
 	someFloatStrict float32, someDouble float64, someFloat float32, nonEmptyString string, repeatedCount uint32,
-	someStringLength string, someBytes []byte, someRuneStringLength string) *ValidatorMessage3 {
+	someStringLength string, someBytes []byte, someRuneStringLength string, someStringHttpUrl string) *ValidatorMessage3 {
 	goodEmbeddedProto3 := &ValidatorMessage3_Embedded{
 		Identifier: identifier,
 		SomeValue:  someValue,
@@ -64,6 +64,8 @@ func buildProto3(someString string, someInt uint32, identifier string, someValue
 		SomeRuneStringGtReq: someRuneStringLength,
 		SomeRuneStringLtReq: someRuneStringLength,
 		SomeRuneStringEqReq: someRuneStringLength,
+
+		SomeStringHttpUrl: someStringHttpUrl,
 	}
 
 	goodProto3.Repeated = make([]int32, repeatedCount, repeatedCount)
@@ -73,7 +75,7 @@ func buildProto3(someString string, someInt uint32, identifier string, someValue
 
 func buildProto2(someString string, someInt uint32, identifier string, someValue int64, someDoubleStrict float64,
 	someFloatStrict float32, someDouble float64, someFloat float32, nonEmptyString string, repeatedCount uint32,
-	someStringLength string, someBytes []byte, someRuneStringLength string) *ValidatorMessage {
+	someStringLength string, someBytes []byte, someRuneStringLength string, someStringHttpUrl string) *ValidatorMessage {
 	goodEmbeddedProto2 := &ValidatorMessage_Embedded{
 		Identifier: &identifier,
 		SomeValue:  &someValue,
@@ -126,6 +128,8 @@ func buildProto2(someString string, someInt uint32, identifier string, someValue
 		SomeRuneStringGtReq: &someRuneStringLength,
 		SomeRuneStringLtReq: &someRuneStringLength,
 		SomeRuneStringEqReq: &someRuneStringLength,
+
+		SomeStringHttpUrl: &someStringHttpUrl,
 	}
 
 	goodProto2.Repeated = make([]int32, repeatedCount, repeatedCount)
@@ -135,7 +139,7 @@ func buildProto2(someString string, someInt uint32, identifier string, someValue
 
 func TestGoodProto3(t *testing.T) {
 	var err error
-	goodProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	goodProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	err = goodProto3.Validate()
 	if err != nil {
 		t.Fatalf("unexpected fail in validator: %v", err)
@@ -144,7 +148,7 @@ func TestGoodProto3(t *testing.T) {
 
 func TestGoodProto2(t *testing.T) {
 	var err error
-	goodProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	goodProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	err = goodProto2.Validate()
 	if err != nil {
 		t.Fatalf("unexpected fail in validator: %v", err)
@@ -152,254 +156,254 @@ func TestGoodProto2(t *testing.T) {
 }
 
 func TestStringRegex(t *testing.T) {
-	tooLong1Proto3 := buildProto3("toolong", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	tooLong1Proto3 := buildProto3("toolong", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if tooLong1Proto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	tooLong2Proto3 := buildProto3("-%ab", 11, "bad#", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	tooLong2Proto3 := buildProto3("-%ab", 11, "bad#", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if tooLong2Proto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	tooLong1Proto2 := buildProto2("toolong", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	tooLong1Proto2 := buildProto2("toolong", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if tooLong1Proto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	tooLong2Proto2 := buildProto2("-%ab", 11, "bad#", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	tooLong2Proto2 := buildProto2("-%ab", 11, "bad#", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if tooLong2Proto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
 }
 
 func TestIntLowerBounds(t *testing.T) {
-	lowerThan10Proto3 := buildProto3("-%ab", 9, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan10Proto3 := buildProto3("-%ab", 9, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan10Proto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	lowerThan10Proto2 := buildProto2("-%ab", 9, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan10Proto2 := buildProto2("-%ab", 9, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan10Proto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	lowerThan0Proto3 := buildProto3("-%ab", 11, "abba", -1, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan0Proto3 := buildProto3("-%ab", 11, "abba", -1, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan0Proto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	lowerThan0Proto2 := buildProto2("-%ab", 11, "abba", -1, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan0Proto2 := buildProto2("-%ab", 11, "abba", -1, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan0Proto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
 }
 
 func TestIntUpperBounds(t *testing.T) {
-	greaterThan100Proto3 := buildProto3("-%ab", 11, "abba", 101, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	greaterThan100Proto3 := buildProto3("-%ab", 11, "abba", 101, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if greaterThan100Proto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	greaterThan100Proto2 := buildProto2("-%ab", 11, "abba", 101, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	greaterThan100Proto2 := buildProto2("-%ab", 11, "abba", 101, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if greaterThan100Proto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
 }
 
 func TestDoubleStrictLowerBounds(t *testing.T) {
-	lowerThan035EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.3, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan035EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.3, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan035EpsilonProto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	lowerThan035EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.3, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan035EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.3, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan035EpsilonProto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	greaterThan035EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.300000001, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	greaterThan035EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.300000001, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if greaterThan035EpsilonProto3.Validate() != nil {
 		t.Fatalf("unexpected fail in validator")
 	}
-	greaterThan035EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.300000001, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	greaterThan035EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.300000001, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if greaterThan035EpsilonProto2.Validate() != nil {
 		t.Fatalf("unexpected fail in validator")
 	}
 }
 
 func TestDoubleStrictUpperBounds(t *testing.T) {
-	greaterThan065EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.70000000001, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	greaterThan065EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.70000000001, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if greaterThan065EpsilonProto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	greaterThan065EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.70000000001, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	greaterThan065EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.70000000001, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if greaterThan065EpsilonProto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	lowerThan065EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.6999999999, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan065EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.6999999999, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan065EpsilonProto3.Validate() != nil {
 		t.Fatalf("unexpected fail in validator")
 	}
-	lowerThan065EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.6999999999, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan065EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.6999999999, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan065EpsilonProto2.Validate() != nil {
 		t.Fatalf("unexpected fail in validator")
 	}
 }
 
 func TestFloatStrictLowerBounds(t *testing.T) {
-	lowerThan035EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.2999999, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan035EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.2999999, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan035EpsilonProto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	lowerThan035EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.2999999, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan035EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.2999999, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan035EpsilonProto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	greaterThan035EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.3000001, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	greaterThan035EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.3000001, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := greaterThan035EpsilonProto3.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
-	greaterThan035EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.3000001, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	greaterThan035EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.3000001, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := greaterThan035EpsilonProto2.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
 }
 
 func TestFloatStrictUpperBounds(t *testing.T) {
-	greaterThan065EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.7000001, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	greaterThan065EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.7000001, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if greaterThan065EpsilonProto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	greaterThan065EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.7000001, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	greaterThan065EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.7000001, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if greaterThan065EpsilonProto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	lowerThan065EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.6999999, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan065EpsilonProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.6999999, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := lowerThan065EpsilonProto3.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
-	lowerThan065EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.6999999, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan065EpsilonProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.6999999, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := lowerThan065EpsilonProto2.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
 }
 
 func TestDoubleNonStrictLowerBounds(t *testing.T) {
-	lowerThan0Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.2499999, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan0Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.2499999, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan0Proto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	lowerThan0Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.2499999, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan0Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.2499999, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan0Proto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	equalTo0Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.25, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	equalTo0Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.25, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := equalTo0Proto3.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
-	equalTo0Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.25, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	equalTo0Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.25, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := equalTo0Proto2.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
 }
 
 func TestDoubleNonStrictUpperBounds(t *testing.T) {
-	higherThan1Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.75111111, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	higherThan1Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.75111111, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if higherThan1Proto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	higherThan1Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.75111111, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	higherThan1Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.75111111, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if higherThan1Proto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	equalTo0Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.75, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	equalTo0Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.75, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := equalTo0Proto3.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
-	equalTo0Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.75, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	equalTo0Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.75, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := equalTo0Proto2.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
 }
 
 func TestFloatNonStrictLowerBounds(t *testing.T) {
-	lowerThan0Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.2499999, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan0Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.2499999, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan0Proto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	lowerThan0Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.2499999, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	lowerThan0Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.2499999, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if lowerThan0Proto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	equalTo0Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.25, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	equalTo0Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.25, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := equalTo0Proto3.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
-	equalTo0Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.25, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	equalTo0Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.25, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := equalTo0Proto2.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
 }
 
 func TestFloatNonStrictUpperBounds(t *testing.T) {
-	higherThan1Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.75111111, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	higherThan1Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.75111111, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if higherThan1Proto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	higherThan1Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.75111111, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	higherThan1Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.75111111, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if higherThan1Proto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	equalTo0Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.75, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	equalTo0Proto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.75, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := equalTo0Proto3.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
-	equalTo0Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.75, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	equalTo0Proto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.75, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := equalTo0Proto2.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
 }
 
 func TestStringNonEmpty(t *testing.T) {
-	emptyStringProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	emptyStringProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if emptyStringProto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	emptyStringProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	emptyStringProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if emptyStringProto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	nonEmptyStringProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	nonEmptyStringProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := nonEmptyStringProto3.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
-	nonEmptyStringProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	nonEmptyStringProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := nonEmptyStringProto2.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
 }
 
 func TestRepeatedEltsCount(t *testing.T) {
-	notEnoughEltsProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 1, "1234567890", stableBytes, "あいうえおあいうえお")
+	notEnoughEltsProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 1, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if notEnoughEltsProto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	notEnoughEltsProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 1, "1234567890", stableBytes, "あいうえおあいうえお")
+	notEnoughEltsProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 1, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if notEnoughEltsProto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	tooManyEltsProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 14, "1234567890", stableBytes, "あいうえおあいうえお")
+	tooManyEltsProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 14, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if tooManyEltsProto3.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	tooManyEltsProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 14, "1234567890", stableBytes, "あいうえおあいうえお")
+	tooManyEltsProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 14, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if tooManyEltsProto2.Validate() == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	}
-	validEltsCountProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	validEltsCountProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := validEltsCountProto3.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
-	validEltsCountProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	validEltsCountProto2 := buildProto2("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := validEltsCountProto2.Validate(); err != nil {
 		t.Fatalf("unexpected fail in validator %v", err)
 	}
 }
 
 func TestMsgExist(t *testing.T) {
-	someProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	someProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	someProto3.SomeEmbedded = nil
 	if err := someProto3.Validate(); err != nil {
 		t.Fatalf("validate shouldn't fail on missing SomeEmbedded, not annotated")
@@ -413,31 +417,31 @@ func TestMsgExist(t *testing.T) {
 }
 
 func TestStringLengthValidator(t *testing.T) {
-	StringLengthErrorProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "abc456", stableBytes, "あいうえおあいうえお")
+	StringLengthErrorProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "abc456", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := StringLengthErrorProto3.Validate(); err == nil {
 		t.Fatalf("validate shouldn't fail on error length")
 	}
 
-	StringLengthSuccess := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	StringLengthSuccess := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := StringLengthSuccess.Validate(); err != nil {
 		t.Fatalf("validate shouldn't fail on equal length")
 	}
 }
 
 func TestBytesLengthValidator(t *testing.T) {
-	StringLengthErrorProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "abc456", []byte("anc"), "あいうえおあいうえお")
+	StringLengthErrorProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "abc456", []byte("anc"), "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := StringLengthErrorProto3.Validate(); err == nil {
 		t.Fatalf("validate shouldn't fail on error length")
 	}
 
-	StringLengthSuccess := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	StringLengthSuccess := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	if err := StringLengthSuccess.Validate(); err != nil {
 		t.Fatalf("validate shouldn't fail on equal length")
 	}
 }
 
 func TestNestedError3(t *testing.T) {
-	someProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	someProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	someProto3.SomeEmbeddedExists.SomeValue = 101 // should be less than 101
 	if err := someProto3.Validate(); err == nil {
 		t.Fatalf("expected fail due to nested SomeEmbeddedNonNullable.SomeValue being wrong")
@@ -447,7 +451,7 @@ func TestNestedError3(t *testing.T) {
 }
 
 func TestCustomError_Proto3(t *testing.T) {
-	someProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	someProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	someProto3.CustomErrorInt = 30
 	expectedErr := "invalid field CustomErrorInt: My Custom Error"
 	if err := someProto3.Validate(); err == nil {
@@ -518,7 +522,7 @@ func TestOneOf_Passes(t *testing.T) {
 }
 
 func TestRuneStringLength(t *testing.T) {
-	notEnoughRuneLengthGtProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	notEnoughRuneLengthGtProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	notEnoughRuneLengthGtProto3.SomeRuneStringGtReq = "あい"
 	if err := notEnoughRuneLengthGtProto3.Validate(); err == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
@@ -526,7 +530,7 @@ func TestRuneStringLength(t *testing.T) {
 		t.Log(err.Error())
 	}
 
-	notEnoughRuneLengthLtProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	notEnoughRuneLengthLtProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	notEnoughRuneLengthLtProto3.SomeRuneStringLtReq = "あいうえおあいうえおあい"
 	if err := notEnoughRuneLengthLtProto3.Validate(); err == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
@@ -534,9 +538,18 @@ func TestRuneStringLength(t *testing.T) {
 		t.Log(err.Error())
 	}
 
-	notEnoughRuneLengthEqProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお")
+	notEnoughRuneLengthEqProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https://github.com/mwitkow/go-proto-validators")
 	notEnoughRuneLengthEqProto3.SomeRuneStringEqReq = "あいうえおあいうえ"
 	if err := notEnoughRuneLengthEqProto3.Validate(); err == nil {
+		t.Fatalf("expected fail in validator, but it didn't happen")
+	} else {
+		t.Log(err.Error())
+	}
+}
+
+func TestStringHttpUrl(t *testing.T) {
+	notEnoughRuneLengthGtProto3 := buildProto3("-%ab", 11, "abba", 99, 0.5, 0.5, 0.5, 0.5, "x", 4, "1234567890", stableBytes, "あいうえおあいうえお", "https//github.com/mwitkow/go-proto-validators")
+	if err := notEnoughRuneLengthGtProto3.Validate(); err == nil {
 		t.Fatalf("expected fail in validator, but it didn't happen")
 	} else {
 		t.Log(err.Error())
