@@ -77,4 +77,5 @@ message ValidatorMessage {
   optional string SomeRuneStringGtReq = 43 [(validator.field) = {rune_length_lt: 12}];
   optional string SomeRuneStringEqReq = 44 [(validator.field) = {rune_length_eq: 10}];
 
+  optional string SomeStringHttpUrl = 45 [(validator.field) = {string_http_url: true}];
 }

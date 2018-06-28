@@ -63,6 +63,10 @@ import (
 	"github.com/superchoice/go-proto-validators"
 )
 
+const (
+	httpURLPattern = `^(http|https)://([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$`
+)
+
 type plugin struct {
 	*generator.Generator
 	generator.PluginImports
@@ -146,11 +150,19 @@ func (p *plugin) isSupportedFloat(field *descriptor.FieldDescriptorProto) bool {
 
 func (p *plugin) generateRegexVars(file *generator.FileDescriptor, message *generator.Descriptor) {
 	ccTypeName := generator.CamelCaseSlice(message.TypeName())
+	isHttpURLExists := false
 	for _, field := range message.Field {
 		validator := getFieldValidatorIfAny(field)
-		if validator != nil && validator.Regex != nil {
+		if validator == nil {
+			continue
+		}
+		if validator.Regex != nil {
 			fieldName := p.GetFieldName(message, field)
 			p.P(`var `, p.regexName(ccTypeName, fieldName), ` = `, p.regexPkg.Use(), `.MustCompile(`, strconv.Quote(*validator.Regex), `)`)
+		}
+		if validator.StringHttpUrl != nil && *validator.StringHttpUrl && !isHttpURLExists {
+			isHttpURLExists = true
+			p.P(`var `, p.regexName(ccTypeName, "StringHttpURL"), ` = `, p.regexPkg.Use(), `.MustCompile(`, strconv.Quote(httpURLPattern), `)`)
 		}
 	}
 }
@@ -508,6 +520,14 @@ func (p *plugin) generateStringValidator(variableName string, ccTypeName string,
 		p.P(`if `, variableName, ` == "" {`)
 		p.In()
 		errorStr := "not be an empty string"
+		p.generateErrorString(variableName, fieldName, errorStr, fv)
+		p.Out()
+		p.P(`}`)
+	}
+	if fv.StringHttpUrl != nil && *fv.StringHttpUrl {
+		p.P(`if !`, p.regexName(ccTypeName, "StringHttpURL"), `.MatchString(`, variableName, `) {`)
+		p.In()
+		errorStr := "be valid http url"
 		p.generateErrorString(variableName, fieldName, errorStr, fv)
 		p.Out()
 		p.P(`}`)
